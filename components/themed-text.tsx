@@ -1,60 +1,54 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { Fonts } from "@/constants/theme";
+import { useThemeColor } from "@/hooks/use-theme-color";
+import { Text as RNText, TextProps } from "react-native";
+import { tv } from "tailwind-variants";
 
-import { useThemeColor } from '@/hooks/use-theme-color';
+const textStyles = tv({
+  base: "font-normal",
+  variants: {
+    size: {
+      sm: "text-sm",
+      md: "text-base",
+      lg: "text-lg",
+      xl: "text-xl",
+      "2xl": "text-2xl",
+    },
+    weight: {
+      normal: "font-normal",
+      medium: "font-medium",
+      bold: "font-bold",
+    },
+  },
+  defaultVariants: {
+    size: "md",
+    weight: "normal",
+  },
+});
 
-export type ThemedTextProps = TextProps & {
+type Props = TextProps & {
+  size?: "sm" | "md" | "lg" | "xl" | "2xl";
+  weight?: "normal" | "medium" | "bold";
+  font?: keyof typeof Fonts;
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 };
 
 export function ThemedText({
+  size,
+  weight,
   style,
+  font = "dancing",
   lightColor,
   darkColor,
-  type = 'default',
   ...rest
-}: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+}: Props) {
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
   return (
-    <Text
-      style={[
-        { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
-        style,
-      ]}
+    <RNText
       {...rest}
+      style={[{ color, fontFamily: Fonts[font] }, style]}
+      className={textStyles({ size, weight })}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-});
