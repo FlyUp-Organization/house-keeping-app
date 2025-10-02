@@ -1,78 +1,46 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import AnimatedSplash from "@/presentation/theme/components/ui/AnimatedSplash";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
+import { StatusBar } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import {
-  useFonts,
-  DancingScript_400Regular,
-} from "@expo-google-fonts/dancing-script";
-
 import "./global.css";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { ThemedText } from "@/components/themed-text";
-import { StatusBar, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect } from "react";
-import { SplashScreen } from "expo-router";
 
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [showSplash, setShowSplash] = useState(true);
 
   const [loaded, error] = useFonts({
-    DancingRegular: DancingScript_400Regular, 
+    GilroyBold: require("../assets/fonts/Gilroy-Bold.ttf"),
+    GilroyMedium: require("../assets/fonts/Gilroy-Medium.ttf"),
+    GilroySemiBold: require("../assets/fonts/Gilroy-SemiBold.ttf"),
   });
 
   useEffect(() => {
     if (loaded || error) {
-      SplashScreen.hideAsync();
+      const prepare = async () => {
+        await SplashScreen.hideAsync();
+      };
+
+      prepare();
     }
   }, [loaded, error]);
 
-  if (!loaded && !error) {
-    return null;
-  }
-
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-black">
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <StatusBar
-          barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
-        />
-        <Text className="text-white" style={{ fontFamily: "DancingRegular" }}>
-          Hola
-        </Text>
-        <ThemedText size="2xl" weight="bold">
-          Hola munduudahd ff
-        </ThemedText>
-        <ThemedText font="dancing" className="top-40" size="xl" >
-          Hola munduudahd ff
-        </ThemedText>
-        <ThemedText className="top-40" size="xl" weight="normal">
-          Hola munduudahd ffada
-        </ThemedText>
-        <ThemedText className="top-40" size="xl" weight="bold">
-          Hola munduudahd ff
-        </ThemedText>
-        <ThemedText className="top-40" size="xl" weight="bold">
-          Hola munduudahd ff
-        </ThemedText>
-        <ThemedText className="top-40" size="xl" weight="bold">
-          Hola munduudahd ff
-        </ThemedText>
-        <ThemedText className="top-40" size="xl" weight="bold">
-          Hola munduudahd ff
-        </ThemedText>
-        <ThemedText className="top-40" size="xl" weight="bold">
-          Hola munduudahd ff
-        </ThemedText>
-        <Text>Hola</Text>
-      </ThemeProvider>
-    </SafeAreaView>
+    <GestureHandlerRootView>
+      <StatusBar barStyle={"dark-content"} />
+      {showSplash ? (
+        <AnimatedSplash onFinish={() => setShowSplash(false)} />
+      ) : (
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        ></Stack>
+      )}
+    </GestureHandlerRootView>
   );
 }
