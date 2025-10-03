@@ -31,7 +31,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <StatusBar barStyle={"dark-content"} />
+      <StatusBar hidden />
       {showSplash ? (
         <AnimatedSplash onFinish={() => setShowSplash(false)} />
       ) : (

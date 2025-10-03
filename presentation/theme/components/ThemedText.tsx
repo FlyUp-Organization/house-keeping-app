@@ -27,16 +27,21 @@ type Props = TextProps & {
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
   textColor?: "white" | "black";
   font?: "GilroyMedium" | "GilroySemiBold" | "GilroyBold";
+  textAlign?: "left" | "center" | "right"; 
 };
 
 export function ThemedText({
   size,
   textColor,
   font = "GilroyMedium",
+  textAlign = "left",
   style,
   ...rest
 }: Props) {
-  const combinedStyle: StyleProp<TextStyle> = [{ fontFamily: font }, style];
+  const combinedStyle: StyleProp<TextStyle> = [
+    { fontFamily: font, textAlign },
+    style,
+  ];
 
   return (
     <Text

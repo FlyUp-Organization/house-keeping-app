@@ -1,58 +1,78 @@
-import { slides } from "@/core/onboarding/data/onboardingData";
+import { items } from "@/core/onboarding/data/slide-data";
+import SlideItem from "@/presentation/onboarding/components/SlideItem";
 import ThemedButton from "@/presentation/theme/components/ThemedButton";
 import ThemedView from "@/presentation/theme/components/ThemedView";
-import React, { useRef, useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-  View,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-} from "react-native";
+import { router } from "expo-router";
+import { useRef, useState } from "react";
+import { NativeScrollEvent, NativeSyntheticEvent, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 
-const { width } = Dimensions.get("window");
-
-export default function OnboardingScreen() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const SlidesScreen = () => {
   const flatListRef = useRef<FlatList>(null);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const index = Math.round(event.nativeEvent.contentOffset.x / width);
-    setCurrentIndex(index);
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, layoutMeasurement } = event.nativeEvent;
+    const index = Math.round(contentOffset.x / layoutMeasurement.width);
+    setCurrentSlideIndex(index);
+  };
+
+  const scrollToSlide = (index: number) => {
+    if (!flatListRef.current) return;
+    flatListRef.current.scrollToIndex({ index, animated: true });
   };
 
   return (
-    <ThemedView safe>
+    <ThemedView style={{ flex: 1 }}>
+      {/* FlatList */}
       <FlatList
         ref={flatListRef}
-        data={slides}
-        keyExtractor={(item) => item.id}
+        data={items}
+        keyExtractor={(item) => item.title}
+        renderItem={({ item }) => <SlideItem item={item} />}
+        showsHorizontalScrollIndicator={false}
         horizontal
         pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        renderItem={({ item }) => {
-          const Component = item.component;
-          return (
-            <View style={{ width }}>
-              <Component />
-            </View>
-          );
-        }}
+        onScroll={onScroll}
+        scrollEventThrottle={16} // importante para actualizar con fluidez
       />
 
-      <ThemedView className="flex-row justify-center mb-20">
-        {slides.map((_, i) => (
+      {/* Dots */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginVertical: 20,
+        }}
+      >
+        {items.map((_, i) => (
           <View
             key={i}
-            className={`w-2 h-2 mx-1 rounded-full ${
-              i === currentIndex ? "bg-blue-500" : "bg-gray-300"
-            }`}
+            style={{
+             
+              width: currentSlideIndex === i ? 12 : 8,
+              height: currentSlideIndex === i ? 12 : 8,
+              borderRadius: 6,
+              backgroundColor: currentSlideIndex === i ? "#2a9d8f" : "#ccc",
+              marginHorizontal: 4,
+            }}
           />
         ))}
-      </ThemedView>
+      </View>
 
-      <ThemedButton>Omitir</ThemedButton>
+      {/* Botón */}
+      <ThemedButton
+        className="absolute bottom-10 right-2"
+        onPress={() =>
+          currentSlideIndex === items.length - 1
+            ? router.dismiss()
+            : scrollToSlide(currentSlideIndex + 1)
+        }
+      >
+        Omitir
+      </ThemedButton>
     </ThemedView>
   );
-}
+};
+
+export default SlidesScreen;

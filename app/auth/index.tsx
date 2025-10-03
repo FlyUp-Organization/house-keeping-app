@@ -7,7 +7,6 @@ export default function index() {
     <KeyboardAvoidingView behavior="padding" className="flex-1">
       <ScrollView>
         {/* <FlatList data={}></FlatList> */}
-        <ThemedText>Hola fsfwfwfwefweffsdfsdfdswfwfwfwfwf</ThemedText>
       </ScrollView>
     </KeyboardAvoidingView>
   );

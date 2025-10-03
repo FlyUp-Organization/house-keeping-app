@@ -1,8 +1,15 @@
 import React from "react";
-import { View, ViewProps } from "react-native";
+import { useWindowDimensions, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { tv } from "tailwind-variants";
 
+interface Props extends ViewProps {
+  className?: string;
+  margin?: boolean;
+  safe?: boolean;
+  bgColor?: "primary" | "secondary";
+  children?: React.ReactNode;
+}
 const themedView = tv({
   base: "flex-1",
   variants: {
@@ -18,14 +25,6 @@ const themedView = tv({
     margin: false,
   },
 });
-
-interface Props extends ViewProps {
-  className?: string;
-  margin?: boolean;
-  safe?: boolean;
-  bgColor?: "primary" | "secondary";
-  children?: React.ReactNode;
-}
 
 const ThemedView = ({
   style,
