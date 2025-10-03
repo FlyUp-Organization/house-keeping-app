@@ -1,12 +1,10 @@
 import { slides } from "@/core/onboarding/data/onboardingData";
-import { ThemedText } from "@/presentation/theme/components/ThemedText";
+import ThemedButton from "@/presentation/theme/components/ThemedButton";
 import ThemedView from "@/presentation/theme/components/ThemedView";
 import React, { useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
-  StyleSheet,
-  TouchableOpacity,
   View,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -34,7 +32,7 @@ export default function OnboardingScreen() {
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
         renderItem={({ item }) => {
-          const Component = item.component; 
+          const Component = item.component;
           return (
             <View style={{ width }}>
               <Component />
@@ -54,16 +52,7 @@ export default function OnboardingScreen() {
         ))}
       </ThemedView>
 
-      <TouchableOpacity style={styles.skipButton}>
-        <ThemedText font="GilroySemiBold">Omitir</ThemedText>
-      </TouchableOpacity>
+      <ThemedButton>Omitir</ThemedButton>
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  skipButton: {
-    alignSelf: "center",
-    marginBottom: 30,
-  },
-});
