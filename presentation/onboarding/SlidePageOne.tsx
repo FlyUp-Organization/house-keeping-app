@@ -1,33 +1,26 @@
-// SlideItemOne.tsx
-
 import { items } from "@/core/onboarding/data/pageOneContent";
 import React from "react";
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  StyleSheet,
-  ViewStyle,
-} from "react-native";
+import { Dimensions, FlatList, Image, ViewStyle } from "react-native";
 import ThemedView from "../theme/components/ThemedView";
 
 const { width } = Dimensions.get("window");
 
-const SlideItemOne: React.FC = () => {
+const SlidePageOne = () => {
   return (
     <FlatList
       data={items}
       keyExtractor={(item) => item.id}
-      horizontal
-      showsHorizontalScrollIndicator={false}
+      numColumns={3}
       renderItem={({ item, index }) => {
         const { img, bgColor } = item;
+
+        const itemSize = width / 3 - 10;
+
         const isMiddleColumn = index % 3 === 1;
-        const height = (width * 5) / 3;
 
         const containerStyle: ViewStyle = {
-          width,
-          height,
+          width: itemSize,
+          height: itemSize * 1.2,
           backgroundColor: bgColor ?? "transparent",
           marginTop: isMiddleColumn ? -20 : 0,
           borderRadius: 10,
@@ -38,7 +31,11 @@ const SlideItemOne: React.FC = () => {
         return (
           <ThemedView style={containerStyle}>
             {img && (
-              <Image  source={img} style={styles.image} resizeMode="cover" />
+              <Image
+                source={img}
+                className="w-full h-full"
+                resizeMode="cover"
+              />
             )}
           </ThemedView>
         );
@@ -47,12 +44,4 @@ const SlideItemOne: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 10,
-  },
-});
-
-export default SlideItemOne;
+export default SlidePageOne;

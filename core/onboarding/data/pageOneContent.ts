@@ -1,6 +1,6 @@
 import { ImageSourcePropType } from "react-native";
 
-export interface VisualSlide {
+interface VisualSlide {
   id: string;
   img?: ImageSourcePropType;
   bgColor?: string;

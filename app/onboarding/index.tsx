@@ -1,72 +1,69 @@
-// IndexScreen.tsx
-import { onboardingItems } from "@/core/onboarding/data/onboardingData";
+import { slides } from "@/core/onboarding/data/onboardingData";
+import { ThemedText } from "@/presentation/theme/components/ThemedText";
+import ThemedView from "@/presentation/theme/components/ThemedView";
 import React, { useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  StyleSheet,
-  View,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
 
-const SlidesScreen = () => {
+export default function OnboardingScreen() {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isScrollEnabled, setIsScrollEnabled] = useState(false);
 
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (isScrollEnabled) {
-      return;
-    }
-
-    const { contentOffset, layoutMeasurement } = event.nativeEvent;
-
-    const currentIndex = Math.floor(contentOffset.x / layoutMeasurement.width);
-
-    setCurrentSlideIndex(currentIndex > 0 ? currentIndex : 0);
-
-    if (currentIndex === onboardingItems.length - 1) {
-      setIsScrollEnabled(true);
-    }
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const index = Math.round(event.nativeEvent.contentOffset.x / width);
+    setCurrentIndex(index);
   };
 
-  const scrollToSlide = (index: number) => {
-    if (!flatListRef.current) return;
-
-    flatListRef.current.scrollToIndex({
-      index: index,
-      animated: true,
-    });
-  };
   return (
-    <FlatList
-      ref={flatListRef}
-      data={onboardingItems}
-      keyExtractor={(item) => item.id}
-      horizontal
-      pagingEnabled
-      onScroll={onScroll}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({ item }) => {
-        const Component = item.component;
-        return (
-          <View style={{ backgroundColor: "red", flex: 1 }}>
-            <Component />
-          </View>
-        );
-      }}
-    />
+    <ThemedView safe>
+      <FlatList
+        ref={flatListRef}
+        data={slides}
+        keyExtractor={(item) => item.id}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        renderItem={({ item }) => {
+          const Component = item.component; 
+          return (
+            <View style={{ width }}>
+              <Component />
+            </View>
+          );
+        }}
+      />
+
+      <ThemedView className="flex-row justify-center mb-20">
+        {slides.map((_, i) => (
+          <View
+            key={i}
+            className={`w-2 h-2 mx-1 rounded-full ${
+              i === currentIndex ? "bg-blue-500" : "bg-gray-300"
+            }`}
+          />
+        ))}
+      </ThemedView>
+
+      <TouchableOpacity style={styles.skipButton}>
+        <ThemedText font="GilroySemiBold">Omitir</ThemedText>
+      </TouchableOpacity>
+    </ThemedView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  slide: {
-    justifyContent: "center",
-    alignItems: "center",
+  skipButton: {
+    alignSelf: "center",
+    marginBottom: 30,
   },
 });
-
-export default SlidesScreen;
