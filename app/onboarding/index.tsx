@@ -23,7 +23,7 @@ const SlidesScreen = () => {
   };
 
   return (
-    <ThemedView style={{ flex: 1 }}>
+    <ThemedView>
       {/* FlatList */}
       <FlatList
         ref={flatListRef}
@@ -49,7 +49,6 @@ const SlidesScreen = () => {
           <View
             key={i}
             style={{
-             
               width: currentSlideIndex === i ? 12 : 8,
               height: currentSlideIndex === i ? 12 : 8,
               borderRadius: 6,

@@ -1,5 +1,5 @@
 import React from "react";
-import { useWindowDimensions, View, ViewProps } from "react-native";
+import { View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { tv } from "tailwind-variants";
 
